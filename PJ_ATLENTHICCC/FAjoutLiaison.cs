@@ -17,6 +17,7 @@ namespace PJ_ATLENTHICCC
         private MySqlConnection maCnx;
         public FAjoutLiaison()
         {
+            this.StartPosition = FormStartPosition.CenterScreen;
             InitializeComponent();
            // MySqlConnection maCnx; // ! déclaration avant le bloc Try
 

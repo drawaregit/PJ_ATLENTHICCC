@@ -15,7 +15,7 @@ namespace PJ_ATLENTHICCC
             InitializeComponent();
 
             maCnx = new MySqlConnection("server=localhost;user=root;database=atlantik2023;port=3306;password=");
-
+            this.StartPosition = FormStartPosition.CenterScreen;
             try
             {
                 string requête;
@@ -94,7 +94,7 @@ namespace PJ_ATLENTHICCC
                     txt.Location = new Point(txt_categorietype.Location.X, pos);
 
                     txtbox = new System.Windows.Forms.TextBox();
-                    txtbox.Tag = jeuEnr;
+                    txtbox.Tag = jeuEnr["LETTRECATEGORIE"].ToString() + jeuEnr["NOTYPE"];
                     txtbox.Location = new Point(txt_tarifs.Location.X, pos);
 
                     pos += baissey;
@@ -134,7 +134,7 @@ namespace PJ_ATLENTHICCC
                     maCnx.Open(); // on se connecte
                                   // NOTA BENE : title est un nom de champ, titles le nom de la table !
                                   // DEBUT requête paramétrée
-                    requête = "INSERT INTO tarifer (NOPERIODE, LETTRECATEGORIE, NOTYPE, NOLIAISON, TARIF) VALUES (@noperidode, @lettrecategorie, @notype, @noliaison, @tarif)";
+                    requête = "INSERT INTO tarifer (NOPERIODE, LETTRECATEGORIE, NOTYPE, NOLIAISON, TARIF) VALUES (@noperiode, @lettrecategorie, @notype, @noliaison, @tarif)";
                     var maCde = new MySqlCommand(requête, maCnx);
                     maCde.Parameters.AddWithValue("@noperiode", ((Periode)cb_periode.SelectedItem).GetNumero());
                     maCde.Parameters.AddWithValue("@lettrecategorie", txt1.Tag.ToString()[0]);
@@ -145,7 +145,7 @@ namespace PJ_ATLENTHICCC
                     // POUR SOUCIS DE TYPAGE voir exemple ExecuteNonQuery, ci-dessus
                     // FIN requête paramétrée
                     maCde.ExecuteNonQuery();
-                    MessageBox.Show("Tarif ajouté.", "Notification.", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    
                 }
                 catch (MySqlException ex)
                 {
@@ -153,7 +153,7 @@ namespace PJ_ATLENTHICCC
                 }
                 finally { maCnx.Close(); }
             }
-            
+            MessageBox.Show("Tarif ajouté.", "Notification.", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void gb_tarifs_Enter(object sender, EventArgs e)
@@ -163,6 +163,8 @@ namespace PJ_ATLENTHICCC
 
         private void FAjoutTarifs_Load(object sender, EventArgs e)
         {
+            this.StartPosition = FormStartPosition.CenterScreen;
+
         }
 
         private void cb_liaison_SelectedIndexChanged(object sender, EventArgs e)

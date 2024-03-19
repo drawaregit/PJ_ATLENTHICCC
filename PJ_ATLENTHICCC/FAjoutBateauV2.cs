@@ -16,11 +16,11 @@ namespace PJ_ATLENTHICCC
         private MySqlConnection maCnx;
         public FAjoutBateauV2()
         {
+            this.StartPosition = FormStartPosition.CenterScreen;
             InitializeComponent();
             maCnx = new MySqlConnection("server=localhost;user=root;database=atlantik2023;port=3306;password=");
             MySqlDataReader jeuEnr = null;
 
-            Label txt;
 
             try
             {
@@ -31,6 +31,10 @@ namespace PJ_ATLENTHICCC
                 // POUR SOUCIS DE TYPAGE voir exemple ExecuteNonQuery, ci-dessus
                 // FIN requête paramétrée
 
+                Label txt;
+                System.Windows.Forms.TextBox txtbox;
+                int baissey = 25;
+                int pos = txt_categorietype.Location.Y + baissey;
 
 
                 jeuEnr = maCde.ExecuteReader();

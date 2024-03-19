@@ -16,6 +16,7 @@ namespace PJ_ATLENTHICCC
         private MySqlConnection maCnx;
         public FAjoutSecteurcs()
         {
+            this.StartPosition = FormStartPosition.CenterScreen;
             InitializeComponent();
             maCnx = new MySqlConnection("server=localhost;user=root;database=atlantik2023;port=3306;password=");
         }
