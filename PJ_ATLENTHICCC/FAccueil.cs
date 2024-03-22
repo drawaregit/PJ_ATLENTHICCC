@@ -70,7 +70,13 @@ namespace PJ_ATLENTHICCC
 
         private void aProposToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Programme par Neal LEVEQUE-YVARD.\r\n Bse de données par Damien BOUCARD. \r\n Lycée Rabelais 22000.\r\n2024");
+            MessageBox.Show("Programme par Neal LEVEQUE-YVARD.\r\nBase de données par Damien BOUCARD. \r\nLycée Rabelais 22000.\r\n2024");
+        }
+
+        private void unBateauToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            FModifierUnBateau form2 = new FModifierUnBateau();
+            form2.Show();
         }
     }
 }

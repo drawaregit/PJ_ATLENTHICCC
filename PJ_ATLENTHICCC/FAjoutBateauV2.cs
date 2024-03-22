@@ -14,6 +14,7 @@ namespace PJ_ATLENTHICCC
     public partial class FAjoutBateauV2 : Form
     {
         private MySqlConnection maCnx;
+        private MySqlDataReader jeuEnr = null;
         public FAjoutBateauV2()
         {
             this.StartPosition = FormStartPosition.CenterScreen;
@@ -22,11 +23,12 @@ namespace PJ_ATLENTHICCC
             MySqlDataReader jeuEnr = null;
 
 
+
             try
             {
                 string requête;
                 maCnx.Open();
-                requête = "Select * from secteur";
+                requête = "Select * from categorie";
                 var maCde = new MySqlCommand(requête, maCnx);
                 // POUR SOUCIS DE TYPAGE voir exemple ExecuteNonQuery, ci-dessus
                 // FIN requête paramétrée
@@ -34,15 +36,24 @@ namespace PJ_ATLENTHICCC
                 Label txt;
                 System.Windows.Forms.TextBox txtbox;
                 int baissey = 25;
-                int pos = txt_categorietype.Location.Y + baissey;
+                int pos = GB_Capacites.Location.Y + baissey;
 
 
                 jeuEnr = maCde.ExecuteReader();
                 while (jeuEnr.Read())
                 {
-                   /* Console.WriteLine();
-                    txt.Text(new Bateau(int.Parse(jeuEnr["NOSECTEUR"].ToString()), jeuEnr["NOM"].ToString()));
-                   */
+
+                    txt = new Label();
+                    txt.Text = (jeuEnr["LETTRECATEGORIE"].ToString() + " " + jeuEnr["LIBELLE"] + " " + (jeuEnr["LIBELLE"].ToString() + ":"));
+                    txt.Location = new Point(GB_Capacites.Location.X-275, pos);
+
+                    txtbox = new System.Windows.Forms.TextBox();
+                    txtbox.Tag = jeuEnr["LETTRECATEGORIE"].ToString() + jeuEnr["LIBELLE"];
+                    txtbox.Location = new Point(txt.Location.X+200, pos);
+
+                    pos += baissey;
+                    GB_Capacites.Controls.Add(txt);
+                    GB_Capacites.Controls.Add(txtbox);
                 }
             }
             catch (MySqlException ex)
@@ -56,6 +67,87 @@ namespace PJ_ATLENTHICCC
         private void FAjoutBateauV2_Load(object sender, EventArgs e)
         {
 
+        }
+
+        private void btn_ajouter_Click(object sender, EventArgs e)
+        {
+            int compteurbateau = 0;
+            try
+
+            {
+                string requête;
+                maCnx.Open(); // on se connecte
+                // NOTA BENE : title est un nom de champ, titles le nom de la table !
+                // DEBUT requête paramétrée
+                requête = "INSERT INTO bateau (NOM) VALUES (@nom)";
+                var maCde = new MySqlCommand(requête, maCnx);
+                maCde.Parameters.AddWithValue("@nom", txtbox_nombateau.Text);
+                // POUR SOUCIS DE TYPAGE voir exemple ExecuteNonQuery, ci-dessus
+                // FIN requête paramétrée
+                maCde.ExecuteNonQuery();
+                
+            }
+            catch (MySqlException ex)
+            {
+                Console.WriteLine("Erreur " + ex.ToString());
+            }
+            finally { maCnx.Close(); }
+
+            try
+
+            {
+                string requête;
+                maCnx.Open(); // on se connecte
+                // NOTA BENE : title est un nom de champ, titles le nom de la table !
+                // DEBUT requête paramétrée
+                requête = "select * from bateau";
+                var maCde = new MySqlCommand(requête, maCnx);
+                // POUR SOUCIS DE TYPAGE voir exemple ExecuteNonQuery, ci-dessus
+                // FIN requête paramétrée
+                maCde.ExecuteNonQuery();
+
+                
+                jeuEnr = maCde.ExecuteReader();
+
+                while (jeuEnr.Read()) {
+                    compteurbateau += 1;
+                }
+            }
+            catch (MySqlException ex)
+            {
+                Console.WriteLine("Erreur " + ex.ToString());
+            }
+            finally { maCnx.Close(); }
+
+            foreach (TextBox txt1 in GB_Capacites.Controls.OfType<TextBox>())
+            {
+
+                try
+
+                {
+                    MessageBox.Show(txt1.Tag.ToString()[0] + " " + txt1.Tag.ToString()[1]);
+                    string requête;
+                    maCnx.Open(); // on se connecte
+                                  // NOTA BENE : title est un nom de champ, titles le nom de la table !
+                                  // DEBUT requête paramétrée
+                    requête = "INSERT INTO contenir (LETTRECATEGORIE, NOBATEAU, CAPACITEMAX) VALUES (@lettrecategorie, @nobateau, @capacitemax)";
+                    var maCde = new MySqlCommand(requête, maCnx);
+                    maCde.Parameters.AddWithValue("@lettrecategorie", txt1.Tag.ToString()[0]);
+                    maCde.Parameters.AddWithValue("@nobateau", compteurbateau);
+                    maCde.Parameters.AddWithValue("@capacitemax", double.Parse(txt1.Text));
+
+                    // POUR SOUCIS DE TYPAGE voir exemple ExecuteNonQuery, ci-dessus
+                    // FIN requête paramétrée
+                    maCde.ExecuteNonQuery();
+
+                }
+                catch (MySqlException ex)
+                {
+                    MessageBox.Show("Erreur " + ex.ToString());
+                }
+                finally { maCnx.Close(); }
+            }
+            MessageBox.Show("Bateau ajouté.", "Notification.", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }
 }
