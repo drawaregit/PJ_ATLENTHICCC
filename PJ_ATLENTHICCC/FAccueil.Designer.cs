@@ -171,6 +171,7 @@
             this.lesTraverséesPourUneLiaisonEtUneDateDonnéeAvecPlacesRestantesParCatégoriesToolStripMenuItem.Size = new System.Drawing.Size(668, 26);
             this.lesTraverséesPourUneLiaisonEtUneDateDonnéeAvecPlacesRestantesParCatégoriesToolStripMenuItem.Text = "Les traversées pour une liaison et une date donnée avec places restantes par caté" +
     "gories";
+            this.lesTraverséesPourUneLiaisonEtUneDateDonnéeAvecPlacesRestantesParCatégoriesToolStripMenuItem.Click += new System.EventHandler(this.lesTraverséesPourUneLiaisonEtUneDateDonnéeAvecPlacesRestantesParCatégoriesToolStripMenuItem_Click);
             // 
             // lesDétailsDuneRéservationPourUnClientToolStripMenuItem
             // 

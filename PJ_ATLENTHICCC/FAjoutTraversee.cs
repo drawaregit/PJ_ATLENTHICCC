@@ -14,6 +14,7 @@ namespace PJ_ATLENTHICCC
     public partial class FAjoutTraversee : Form
     {
         private MySqlConnection maCnx;
+        private MySqlDataReader jeuEnr = null;
         public FAjoutTraversee()
         {
             InitializeComponent();
@@ -46,31 +47,7 @@ namespace PJ_ATLENTHICCC
             }
             finally { maCnx.Close(); }
 
-            try
-            {
-                string requête;
-                maCnx.Open();
-                requête = "Select * from liaison";
-                var maCde = new MySqlCommand(requête, maCnx);
-                // POUR SOUCIS DE TYPAGE voir exemple ExecuteNonQuery, ci-dessus
-                // FIN requête paramétrée
-
-
-
-                jeuEnr = maCde.ExecuteReader();
-                while (jeuEnr.Read())
-                {
-                    Console.WriteLine();
-                    CB_liaison.Items.Add(new liaison(int.Parse(jeuEnr["NOLIAISON"].ToString()), int.Parse(jeuEnr["NOPORT_DEPART"].ToString()), int.Parse(jeuEnr["NOSECTEUR"].ToString()), int.Parse(jeuEnr["NOPORT_ARRIVEE"].ToString()), double.Parse( jeuEnr["DISTANCE"].ToString())));
-
-                }
-            }
-            catch (MySqlException ex)
-
-            {
-                Console.WriteLine("Erreur " + ex.ToString());
-            }
-            finally { maCnx.Close(); }
+            
 
             try
             {
@@ -102,7 +79,33 @@ namespace PJ_ATLENTHICCC
 
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
+            CB_liaison.Items.Clear();
+            try
+            {
+                string requête;
+                maCnx.Open();
+                requête = "Select * from liaison where NOSECTEUR=(@nosecteur)";
+                var maCde = new MySqlCommand(requête, maCnx);
+                maCde.Parameters.AddWithValue("@nosecteur", lstbx_secteurs.SelectedIndex);
+                // POUR SOUCIS DE TYPAGE voir exemple ExecuteNonQuery, ci-dessus
+                // FIN requête paramétrée
 
+
+
+                jeuEnr = maCde.ExecuteReader();
+                while (jeuEnr.Read())
+                {
+                    Console.WriteLine();
+                    CB_liaison.Items.Add(new liaison(int.Parse(jeuEnr["NOLIAISON"].ToString()), int.Parse(jeuEnr["NOPORT_DEPART"].ToString()), int.Parse(jeuEnr["NOSECTEUR"].ToString()), int.Parse(jeuEnr["NOPORT_ARRIVEE"].ToString()), double.Parse(jeuEnr["DISTANCE"].ToString())));
+
+                }
+            }
+            catch (MySqlException ex)
+
+            {
+                Console.WriteLine("Erreur " + ex.ToString());
+            }
+            finally { maCnx.Close(); }
         }
 
         private void dateTimePicker2_ValueChanged(object sender, EventArgs e)
@@ -136,6 +139,16 @@ namespace PJ_ATLENTHICCC
                 Console.WriteLine("Erreur " + ex.ToString());
             }
             finally { maCnx.Close(); }
+        }
+
+        private void FAjoutTraversee_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void CB_liaison_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

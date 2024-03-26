@@ -78,5 +78,11 @@ namespace PJ_ATLENTHICCC
             FModifierUnBateau form2 = new FModifierUnBateau();
             form2.Show();
         }
+
+        private void lesTraverséesPourUneLiaisonEtUneDateDonnéeAvecPlacesRestantesParCatégoriesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FAfficherTraverseeEtLiaison form2 = new FAfficherTraverseeEtLiaison();
+            form2.Show();
+        }
     }
 }

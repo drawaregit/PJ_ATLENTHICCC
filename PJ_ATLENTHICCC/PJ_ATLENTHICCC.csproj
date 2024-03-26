@@ -138,6 +138,12 @@
     <Compile Include="FAfficherTraversee.Designer.cs">
       <DependentUpon>FAfficherTraversee.cs</DependentUpon>
     </Compile>
+    <Compile Include="FAfficherTraverseeEtLiaison.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FAfficherTraverseeEtLiaison.Designer.cs">
+      <DependentUpon>FAfficherTraverseeEtLiaison.cs</DependentUpon>
+    </Compile>
     <Compile Include="FAjoutBateauV2.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -191,6 +197,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FAfficherTraversee.resx">
       <DependentUpon>FAfficherTraversee.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FAfficherTraverseeEtLiaison.resx">
+      <DependentUpon>FAfficherTraverseeEtLiaison.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FAjoutBateauV2.resx">
       <DependentUpon>FAjoutBateauV2.cs</DependentUpon>

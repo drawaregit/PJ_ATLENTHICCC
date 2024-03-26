@@ -120,6 +120,7 @@
             this.CB_liaison.Name = "CB_liaison";
             this.CB_liaison.Size = new System.Drawing.Size(254, 24);
             this.CB_liaison.TabIndex = 8;
+            this.CB_liaison.SelectedIndexChanged += new System.EventHandler(this.CB_liaison_SelectedIndexChanged);
             // 
             // btn_Ajouter
             // 
@@ -159,6 +160,7 @@
             this.Controls.Add(this.txt_secteurs);
             this.Name = "FAjoutTraversee";
             this.Text = "Ajouter un traversée";
+            this.Load += new System.EventHandler(this.FAjoutTraversee_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
