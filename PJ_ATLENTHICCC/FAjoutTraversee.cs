@@ -86,7 +86,7 @@ namespace PJ_ATLENTHICCC
                 maCnx.Open();
                 requête = "Select * from liaison where NOSECTEUR=(@nosecteur)";
                 var maCde = new MySqlCommand(requête, maCnx);
-                maCde.Parameters.AddWithValue("@nosecteur", lstbx_secteurs.SelectedIndex);
+                maCde.Parameters.AddWithValue("@nosecteur", ((Secteurs)lstbx_secteurs.SelectedItem).GetNumero().ToString());
                 // POUR SOUCIS DE TYPAGE voir exemple ExecuteNonQuery, ci-dessus
                 // FIN requête paramétrée
 

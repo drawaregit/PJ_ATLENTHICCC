@@ -28,7 +28,7 @@ namespace PJ_ATLENTHICCC
 
         public override string ToString()
         {
-            return nom;
+            return numero +"-"+nom;
         }
     }
 }

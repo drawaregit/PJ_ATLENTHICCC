@@ -101,7 +101,7 @@ namespace PJ_ATLENTHICCC
 
         public override string ToString()
         {
-            string texte = ("Départ: " + nomportdepart + "Arrivée: " + nomportarrivee);
+            string texte = (numero +"-"+ nomportdepart + "-" + nomportarrivee);
             return texte;
         }
     }

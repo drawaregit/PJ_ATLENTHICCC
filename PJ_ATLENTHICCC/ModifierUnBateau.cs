@@ -173,5 +173,10 @@ namespace PJ_ATLENTHICCC
             }
             finally { maCnx.Close(); }
         }
+
+        private void GB_Capacites_Enter(object sender, EventArgs e)
+        {
+
+        }
     }
 }

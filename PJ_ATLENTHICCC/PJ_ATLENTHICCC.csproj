@@ -192,7 +192,6 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Secteurs.cs" />
-    <Compile Include="Traversee.cs" />
     <EmbeddedResource Include="FAccueil.resx">
       <DependentUpon>FAccueil.cs</DependentUpon>
     </EmbeddedResource>
