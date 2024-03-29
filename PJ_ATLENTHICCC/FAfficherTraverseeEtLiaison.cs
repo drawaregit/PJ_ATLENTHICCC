@@ -34,6 +34,7 @@ namespace PJ_ATLENTHICCC
                 jeuEnr = maCde.ExecuteReader();
                 while (jeuEnr.Read())
                 {
+                    MessageBox.Show(jeuEnr["SUM(QUANTITERESERVEE)"].ToString());
                     valeurretour = int.Parse(jeuEnr["SUM(QUANTITERESERVEE)"].ToString());
                 }
             }
@@ -105,35 +106,37 @@ namespace PJ_ATLENTHICCC
         }
 
         public string[] getLesTraverseesBateaux(int noLiaison, string dateTraversee)
+{
+    string valeurretour = "";
+    try
+    {
+        string requête;
+        maCnx.Open();
+        requête = "SELECT t.NOTRAVERSEE, DATE_FORMAT(t.DATEHEUREDEPART, '%H:%i') as Time, b.NOM FROM traversee AS t INNER JOIN bateau AS b ON t.Nobateau = b.Nobateau WHERE t.DATEHEUREDEPART LIKE @datedepart AND t.NOLIAISON = @noliaison";
+        var maCde = new MySqlCommand(requête, maCnx);
+        maCde.Parameters.AddWithValue("@datedepart", dateTraversee + "%");
+        maCde.Parameters.AddWithValue("@noliaison", noLiaison);
+
+        var jeuEnr = maCde.ExecuteReader();
+        while (jeuEnr.Read())
         {
-            string valeurretour = "";
-            int i = 0;
-            try
-            {
-                string requête;
-                maCnx.Open();
-                requête = "SELECT t.NOTRAVERSEE, DATE_FORMAT(t.DATEHEUREDEPART, '%H:%i') as Time, b.NOM FROM traversee AS t INNER JOIN bateau AS b ON t.Nobateau = b.Nobateau WHERE t.DATEHEUREDEPART LIKE @datedepart AND t.NOLIAISON = @noliaison";
-                var maCde = new MySqlCommand(requête, maCnx);
-                // POUR SOUCIS DE TYPAGE voir exemple ExecuteNonQuery, ci-dessus
-                // FIN requête paramétrée
-                maCde.Parameters.AddWithValue("@datedepart", dateTraversee+ "%");
-                maCde.Parameters.AddWithValue("@noliaison", noLiaison);
-
-                jeuEnr = maCde.ExecuteReader();
-                while (jeuEnr.Read())
-                {
-                    valeurretour += jeuEnr["NOTRAVERSEE"].ToString() + "-" + jeuEnr["Time"].ToString() +"-" + jeuEnr["NOM"].ToString() +",";
-                    i++;
-                }
-            }
-            catch (MySqlException ex)
-
-            {
-                Console.WriteLine("Erreur " + ex.ToString());
-            }
-            finally { maCnx.Close(); }
-            return valeurretour.Split(',');
+            valeurretour += jeuEnr["NOTRAVERSEE"].ToString() + "-" + jeuEnr["Time"].ToString() + "-" + jeuEnr["NOM"].ToString() + ",";
         }
+        // Supprimez la dernière virgule pour éviter un élément vide à la fin du tableau
+        if (valeurretour.Length > 0)
+        {
+            valeurretour = valeurretour.Remove(valeurretour.Length - 1);
+        }
+    }
+    catch (MySqlException ex)
+    {
+        Console.WriteLine("Erreur " + ex.ToString());
+    }
+    finally { maCnx.Close(); }
+    // Utilisez Split pour créer un tableau, en séparant les éléments par des virgules
+    return valeurretour.Split(',');
+}
+
         public FAfficherTraverseeEtLiaison()
         {
             
@@ -283,30 +286,54 @@ namespace PJ_ATLENTHICCC
 
             lst_traversee.Columns.Add("N°", 50);
             lst_traversee.Columns.Add("Heure", 70);
-            lst_traversee.Columns.Add("Bateau", 100);
+            lst_traversee.Columns.Add("Bateau", 65);
 
             // Ajout de 2 lignes dans le Listview
-            var tabItem = new string[4];
-            ListViewItem unItem;
+            
+            
             string[] categoriesplit = getLesCategories();
-            lst_traversee.Columns.Add(categoriesplit[0], 100);
-            foreach (string )
+            MessageBox.Show(getLesCategories()[0].ToString());
+            for (int i = 0; i < categoriesplit.Length; i++)
+            {
+                lst_traversee.Columns.Add(categoriesplit[i], 75);
+            }
 
-            // Ajout d'un premier item
+            // Supprimez la déclaration de tabItem ici, elle n'est pas nécessaire
+            // var tabItem = new string[4];
 
-            tabItem[0] = "Produit1";
-            tabItem[1] = "100";
-            tabItem[2] = "10";
-            unItem = new ListViewItem(tabItem); // Création ligne
-            lst_traversee.Items.Add(unItem); // Ajout ligne
+            string[] lestraversee = getLesTraverseesBateaux(((liaison)(CB_liaison.SelectedItem)).GetNumero(), dtp_date.Text.ToString());
+            string[] categories = getLesCategories(); // Obtenez les catégories pour calculer les places libres
+
+            foreach (string traversee in lestraversee)
+            {
+                string[] tabItem = traversee.Split('-');
+                if (tabItem.Length == 3)
+                {
+                    ListViewItem unItem = new ListViewItem(tabItem[0]);
+                    unItem.SubItems.Add(tabItem[1]);
+                    unItem.SubItems.Add(tabItem[2]);
+
+  
+                    foreach (string categorie in categories)
+                    {
+                        string[] categorieDetails = categorie.Split('-');
+                        if (categorieDetails.Length == 2)
+                        {
+                            string lettreCategorie = categorieDetails[0];
+                            int totalPlaces = getCapaciteMaximale(int.Parse(tabItem[0]), lettreCategorie);
+                            int placesReservees = getQuantiteEnregistree(int.Parse(tabItem[0]), lettreCategorie);
+                            int placesLibres = totalPlaces - placesReservees;
+
+                            
+                            unItem.SubItems.Add(placesLibres.ToString());
+                        }
+                    }
+
+                    lst_traversee.Items.Add(unItem);
+                }
+            }
 
 
-
-            // Ajout d'un second item
-            tabItem[0] = "Produit2";
-            tabItem[1] = "200";
-            tabItem[2] = "20";
-            lst_traversee.Items.Add(new ListViewItem(tabItem));
         }
 
         private void txt_date_Click(object sender, EventArgs e)

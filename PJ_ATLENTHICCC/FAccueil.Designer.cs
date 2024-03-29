@@ -154,6 +154,7 @@
             this.lesParamètresDuSiteToolStripMenuItem.Name = "lesParamètresDuSiteToolStripMenuItem";
             this.lesParamètresDuSiteToolStripMenuItem.Size = new System.Drawing.Size(240, 26);
             this.lesParamètresDuSiteToolStripMenuItem.Text = "Les paramètres du site";
+            this.lesParamètresDuSiteToolStripMenuItem.Click += new System.EventHandler(this.lesParamètresDuSiteToolStripMenuItem_Click);
             // 
             // afficherToolStripMenuItem
             // 

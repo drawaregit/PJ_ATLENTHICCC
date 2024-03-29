@@ -180,6 +180,12 @@
     <Compile Include="FAjoutTraversee.Designer.cs">
       <DependentUpon>FAjoutTraversee.cs</DependentUpon>
     </Compile>
+    <Compile Include="FModifierParametreDuSIte.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FModifierParametreDuSIte.Designer.cs">
+      <DependentUpon>FModifierParametreDuSIte.cs</DependentUpon>
+    </Compile>
     <Compile Include="liaison.cs" />
     <Compile Include="ModifierUnBateau.cs">
       <SubType>Form</SubType>
@@ -218,6 +224,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FAjoutTraversee.resx">
       <DependentUpon>FAjoutTraversee.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FModifierParametreDuSIte.resx">
+      <DependentUpon>FModifierParametreDuSIte.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ModifierUnBateau.resx">
       <DependentUpon>ModifierUnBateau.cs</DependentUpon>

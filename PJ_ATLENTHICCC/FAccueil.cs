@@ -84,5 +84,11 @@ namespace PJ_ATLENTHICCC
             FAfficherTraverseeEtLiaison form2 = new FAfficherTraverseeEtLiaison();
             form2.Show();
         }
+
+        private void lesParamètresDuSiteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FModifierParametreDuSIte form2 = new FModifierParametreDuSIte();
+            form2.Show();
+        }
     }
 }

@@ -7,6 +7,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -108,30 +109,50 @@ namespace PJ_ATLENTHICCC
 
         private void btn_ajout_Click(object sender, EventArgs e)
         {
-            try
-
+            bool test = false;
+            foreach (TextBox textbox in this.Controls.OfType<TextBox>())
             {
-                string requête;
-                maCnx.Open(); // on se connecte
-                // NOTA BENE : title est un nom de champ, titles le nom de la table !
-                // DEBUT requête paramétrée
-                requête = "INSERT INTO liaison (NOPORT_DEPART,NOSECTEUR,NOPORT_ARRIVEE,DISTANCE) VALUES (@noport_depart, @nosecteur, @noport_arrivee, @distance)";
-                var maCde = new MySqlCommand(requête, maCnx);
-                maCde.Parameters.AddWithValue("@noport_depart", ((Ports)(cmbox_depart.SelectedItem)).GetNumero().ToString());
-                maCde.Parameters.AddWithValue("@nosecteur", ((Secteurs)(lstbox_secteur.SelectedItem)).GetNumero().ToString());
-                maCde.Parameters.AddWithValue("@noport_arrivee", ((Ports)(cmbox_arrivee.SelectedItem)).GetNumero().ToString());
-                maCde.Parameters.AddWithValue("@distance", double.Parse(txtbox_distance.Text));
-                // POUR SOUCIS DE TYPAGE voir exemple ExecuteNonQuery, ci-dessus
-                // FIN requête paramétrée
-                maCde.ExecuteNonQuery();
-                MessageBox.Show("Liaison ajouté.", "Notification.", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                var objetRegEx = new Regex("^[0-9]*$");
+                // Nombre : ^[0-9]*$
+                // Alphabétique (sans accent, sans blanc : ^[a-zA-Z]*$
+                // Alphabétique (avec accent) : ^[a-zA-Zéèêëçàâôù ûïî]*$
+                var résultatTest = objetRegEx.Match(textbox.Text);
+                if (!résultatTest.Success)
+                {
+                    // KO : Fond de la zone de saisie passe en rouge
+                    textbox.BackColor = Color.Red;
+                    test = true;
+                    return;
+                }
             }
-            catch (MySqlException ex)
 
+            if (test == false)
             {
-                Console.WriteLine("Erreur " + ex.ToString());
+                try
+
+                {
+                    string requête;
+                    maCnx.Open(); // on se connecte
+                                  // NOTA BENE : title est un nom de champ, titles le nom de la table !
+                                  // DEBUT requête paramétrée
+                    requête = "INSERT INTO liaison (NOPORT_DEPART,NOSECTEUR,NOPORT_ARRIVEE,DISTANCE) VALUES (@noport_depart, @nosecteur, @noport_arrivee, @distance)";
+                    var maCde = new MySqlCommand(requête, maCnx);
+                    maCde.Parameters.AddWithValue("@noport_depart", ((Ports)(cmbox_depart.SelectedItem)).GetNumero().ToString());
+                    maCde.Parameters.AddWithValue("@nosecteur", ((Secteurs)(lstbox_secteur.SelectedItem)).GetNumero().ToString());
+                    maCde.Parameters.AddWithValue("@noport_arrivee", ((Ports)(cmbox_arrivee.SelectedItem)).GetNumero().ToString());
+                    maCde.Parameters.AddWithValue("@distance", double.Parse(txtbox_distance.Text));
+                    // POUR SOUCIS DE TYPAGE voir exemple ExecuteNonQuery, ci-dessus
+                    // FIN requête paramétrée
+                    maCde.ExecuteNonQuery();
+                    MessageBox.Show("Liaison ajouté.", "Notification.", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (MySqlException ex)
+
+                {
+                    Console.WriteLine("Erreur " + ex.ToString());
+                }
+                finally { maCnx.Close(); }
             }
-            finally { maCnx.Close(); }
         }
     }
 }

@@ -47,6 +47,7 @@
             this.GB_Capacites.TabIndex = 11;
             this.GB_Capacites.TabStop = false;
             this.GB_Capacites.Text = "Capacités Maximales";
+            this.GB_Capacites.Enter += new System.EventHandler(this.GB_Capacites_Enter);
             // 
             // btn_ajouter
             // 

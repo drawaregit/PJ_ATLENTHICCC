@@ -6,6 +6,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -63,40 +64,59 @@ namespace PJ_ATLENTHICCC
         private void btn_modifier_Click(object sender, EventArgs e)
         {
 
-           
 
-            
 
-            foreach (TextBox txt1 in GB_Capacites.Controls.OfType<TextBox>())
+
+            bool test = false;
+            foreach (TextBox textbox in GB_Capacites.Controls.OfType<TextBox>())
             {
-
-                try
-
+                var objetRegEx = new Regex("^[0-9]+$");
+                // Nombre : ^[0-9]*$
+                // Alphabétique (sans accent, sans blanc : ^[a-zA-Z]*$
+                // Alphabétique (avec accent) : ^[a-zA-Zéèêëçàâôù ûïî]*$
+                var résultatTest = objetRegEx.Match(textbox.Text);
+                if (!résultatTest.Success)
                 {
-                    MessageBox.Show(txt1.Tag.ToString()[0].ToString());
-                    string requête;
-                    maCnx.Open(); // on se connecte
-                                  // NOTA BENE : title est un nom de champ, titles le nom de la table !
-                                  // DEBUT requête paramétrée
-                                 
-                    requête = "UPDATE contenir SET CAPACITEMAX = @capacitemax WHERE nobateau = @nobateau AND LETTRECATEGORIE = @lettrecategorie";
-                    var maCde = new MySqlCommand(requête, maCnx);
-                    maCde.Parameters.AddWithValue("@lettrecategorie", txt1.Tag.ToString()[0]);
-                    maCde.Parameters.AddWithValue("@nobateau", ((Bateau)CB_nmbateau.SelectedItem).GetNumero());
-                    maCde.Parameters.AddWithValue("@capacitemax", double.Parse(txt1.Text));
-
-                    // POUR SOUCIS DE TYPAGE voir exemple ExecuteNonQuery, ci-dessus
-                    // FIN requête paramétrée
-                    maCde.ExecuteNonQuery();
-
+                    // KO : Fond de la zone de saisie passe en rouge
+                    textbox.BackColor = Color.Red;
+                    test = true;
+                    return;
                 }
-                catch (MySqlException ex)
-                {
-                    MessageBox.Show("Erreur " + ex.ToString());
-                }
-                finally { maCnx.Close(); }
             }
-            MessageBox.Show("Bateau modifié.", "Notification.", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            if (test == false)
+            {
+                foreach (TextBox txt1 in GB_Capacites.Controls.OfType<TextBox>())
+                {
+
+                    try
+
+                    {
+                        MessageBox.Show(txt1.Tag.ToString()[0].ToString());
+                        string requête;
+                        maCnx.Open(); // on se connecte
+                                      // NOTA BENE : title est un nom de champ, titles le nom de la table !
+                                      // DEBUT requête paramétrée
+
+                        requête = "UPDATE contenir SET CAPACITEMAX = @capacitemax WHERE nobateau = @nobateau AND LETTRECATEGORIE = @lettrecategorie";
+                        var maCde = new MySqlCommand(requête, maCnx);
+                        maCde.Parameters.AddWithValue("@lettrecategorie", txt1.Tag.ToString()[0]);
+                        maCde.Parameters.AddWithValue("@nobateau", ((Bateau)CB_nmbateau.SelectedItem).GetNumero());
+                        maCde.Parameters.AddWithValue("@capacitemax", double.Parse(txt1.Text));
+
+                        // POUR SOUCIS DE TYPAGE voir exemple ExecuteNonQuery, ci-dessus
+                        // FIN requête paramétrée
+                        maCde.ExecuteNonQuery();
+
+                    }
+                    catch (MySqlException ex)
+                    {
+                        MessageBox.Show("Erreur " + ex.ToString());
+                    }
+                    finally { maCnx.Close(); }
+                }
+                MessageBox.Show("Bateau modifié.", "Notification.", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
         }
 
         private void CB_nmbateau_SelectedIndexChanged(object sender, EventArgs e)

@@ -2,6 +2,7 @@
 using System;
 using System.Drawing;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace PJ_ATLENTHICCC
@@ -125,35 +126,55 @@ namespace PJ_ATLENTHICCC
 
         private void btn_ajouter_Click(object sender, EventArgs e)
         {
-            foreach (TextBox txt1 in gb_tarifs.Controls.OfType<TextBox>())
+            bool test = false;
+            foreach (TextBox textbox in gb_tarifs.Controls.OfType<TextBox>())
             {
-                try
-
+                var objetRegEx = new Regex("^[0-9]*$");
+                // Nombre : ^[0-9]*$
+                // Alphabétique (sans accent, sans blanc : ^[a-zA-Z]*$
+                // Alphabétique (avec accent) : ^[a-zA-Zéèêëçàâôù ûïî]*$
+                var résultatTest = objetRegEx.Match(textbox.Text);
+                if (!résultatTest.Success)
                 {
-                    string requête;
-                    maCnx.Open(); // on se connecte
-                                  // NOTA BENE : title est un nom de champ, titles le nom de la table !
-                                  // DEBUT requête paramétrée
-                    requête = "INSERT INTO tarifer (NOPERIODE, LETTRECATEGORIE, NOTYPE, NOLIAISON, TARIF) VALUES (@noperiode, @lettrecategorie, @notype, @noliaison, @tarif)";
-                    var maCde = new MySqlCommand(requête, maCnx);
-                    maCde.Parameters.AddWithValue("@noperiode", ((Periode)cb_periode.SelectedItem).GetNumero());
-                    maCde.Parameters.AddWithValue("@lettrecategorie", txt1.Tag.ToString()[0]);
-                    maCde.Parameters.AddWithValue("@notype", txt1.Tag.ToString()[1]);
-                    maCde.Parameters.AddWithValue("@noliaison", ((liaison)cb_liaison.SelectedItem).GetNumero());
-                    maCde.Parameters.AddWithValue("@tarif", double.Parse(txt1.Text));
-
-                    // POUR SOUCIS DE TYPAGE voir exemple ExecuteNonQuery, ci-dessus
-                    // FIN requête paramétrée
-                    maCde.ExecuteNonQuery();
-                    
+                    // KO : Fond de la zone de saisie passe en rouge
+                    textbox.BackColor = Color.Red;
+                    test = true;
+                    return;
                 }
-                catch (MySqlException ex)
-                {
-                    MessageBox.Show("Erreur " + ex.ToString());
-                }
-                finally { maCnx.Close(); }
             }
-            MessageBox.Show("Tarif ajouté.", "Notification.", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            if (test == false)
+            {
+                foreach (TextBox txt1 in gb_tarifs.Controls.OfType<TextBox>())
+                {
+                    try
+
+                    {
+                        string requête;
+                        maCnx.Open(); // on se connecte
+                                      // NOTA BENE : title est un nom de champ, titles le nom de la table !
+                                      // DEBUT requête paramétrée
+                        requête = "INSERT INTO tarifer (NOPERIODE, LETTRECATEGORIE, NOTYPE, NOLIAISON, TARIF) VALUES (@noperiode, @lettrecategorie, @notype, @noliaison, @tarif)";
+                        var maCde = new MySqlCommand(requête, maCnx);
+                        maCde.Parameters.AddWithValue("@noperiode", ((Periode)cb_periode.SelectedItem).GetNumero());
+                        maCde.Parameters.AddWithValue("@lettrecategorie", txt1.Tag.ToString()[0]);
+                        maCde.Parameters.AddWithValue("@notype", txt1.Tag.ToString()[1]);
+                        maCde.Parameters.AddWithValue("@noliaison", ((liaison)cb_liaison.SelectedItem).GetNumero());
+                        maCde.Parameters.AddWithValue("@tarif", double.Parse(txt1.Text));
+
+                        // POUR SOUCIS DE TYPAGE voir exemple ExecuteNonQuery, ci-dessus
+                        // FIN requête paramétrée
+                        maCde.ExecuteNonQuery();
+
+                    }
+                    catch (MySqlException ex)
+                    {
+                        MessageBox.Show("Erreur " + ex.ToString());
+                    }
+                    finally { maCnx.Close(); }
+                }
+                MessageBox.Show("Tarif ajouté.", "Notification.", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
         }
 
         private void gb_tarifs_Enter(object sender, EventArgs e)
